@@ -6,6 +6,18 @@
       "request": "launch",
       "sourceMaps": true,
       "skipFiles": ["<node_internals>/**"],
+      "cwd": "${workspaceFolder}",
+      "type": "node",
+      "preLaunchTask": "${defaultBuildTask}"
+    },
+    {
+      "name": "Launch Program Verbose",
+      "program": "${workspaceFolder}/dist/index.js",
+      "args": ["-v", "-d"],
+      "cwd": "${workspaceFolder}",
+      "request": "launch",
+      "sourceMaps": true,
+      "skipFiles": ["<node_internals>/**"],
       "type": "node",
       "preLaunchTask": "${defaultBuildTask}"
     }

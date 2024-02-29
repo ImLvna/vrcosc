@@ -1,28 +1,49 @@
 {
-  "name": "lunatemplate",
-  "description": "Starter template for luna's projects",
-  "homepage": "https://github.com/imlvna/template",
+  "name": "vrcosc",
+  "description": "VRChat OSC server",
+  "homepage": "https://github.com/imlvna/vrcosc",
+  "version": "1.0.0",
   "main": "dist/index.js",
   "engines": {
     "node": ">=21.5.0"
   },
-  "packageManager": "pnpm@8.14.1",
+  "packageManager": "pnpm@8.15.3",
   "scripts": {
-    "build": "node build.mjs",
-    "start": "node dist/index.js",
+    "build": "tsc",
+    "package": "electron-builder --dir",
+    "start": "electron .",
     "test": "tsc --noEmit && biome check .",
     "lint": "biome lint .",
     "format": "biome format . --write",
     "fix": "biome check . --apply",
     "postinstall": "husky install"
   },
+  "build": {
+    "appId": "gay.lvna.vrcosc",
+    "files": ["dist/**/*", "static/**/*", "node_modules/**/*", "package.json"],
+    "directories": {
+      "buildResources": "static"
+    },
+    "publish": {
+      "provider": "github"
+    }
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "dependencies": {
+    "active-win": "^8.2.0",
+    "node-osc": "^9.1.0",
+    "spotify-web-api-node": "^5.0.2",
+    "voicemeeter-remote": "^0.5.0"
+  },
   "devDependencies": {
     "@biomejs/biome": "^1.5.1",
     "@types/node": "^20.10.8",
-    "esbuild": "^0.19.11",
+    "@types/node-osc": "^6.0.3",
+    "@types/spotify-web-api-node": "^5.0.11",
+    "electron": "^29.1.0",
+    "electron-builder": "^24.12.0",
     "husky": "^8.0.3",
     "typescript": "^5.3.3"
   }

@@ -7,4 +7,9 @@ esbuild.build({
   platform: "node",
   target: ["node21"],
   sourcemap: true,
+  loader: {
+    ".node": "copy",
+    ".html": "empty",
+  },
+  external: ["mock-aws-s3", "aws-sdk", "nock"], // node-pre-gyp :fear:
 });

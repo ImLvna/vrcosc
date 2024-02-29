@@ -4,8 +4,9 @@
     "module": "CommonJS",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": true,
     "baseUrl": "./src",
-    "noEmit": true
-  }
+    "noEmit": false,
+    "resolveJsonModule": true,
+    "outDir": "./dist"
+  },
 }

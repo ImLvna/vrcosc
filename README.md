@@ -1,3 +1,14 @@
-# Template
+# vrcosc
 
-Simple typescript / biome / docker template!
+My nodejs vrchat osc solution!
+
+## Features:
+
+- Chatbox
+- - Scrolling messages
+- - Spotify Lyrics
+- - Current Time
+- Voicemeeter Controller
+- - Mute Inputs
+- - Edit Gain
+- - Toggle Outputs

@@ -1,0 +1,1 @@
+node --no-deprecation dist/index.js
