@@ -34,12 +34,14 @@ interface Config {
 }
 
 function findConfigPath() {
-  console.log(join(cwd(), "config.json"));
   if (existsSync(join(cwd(), "config.json"))) {
     return join(cwd(), "config.json");
   }
   if (existsSync(join(cwd(), "../config.json"))) {
     return join(cwd(), "../config.json");
+  }
+  if (existsSync(join(cwd(), "../../config.json"))) {
+    return join(cwd(), "../../config.json");
   }
   return join(cwd(), "config.json");
 }
