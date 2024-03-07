@@ -55,6 +55,18 @@ export enum ClientConfig {
   vmMute = "vm/mute",
   vmGain = "vm/gain",
   vmResetGain = "vm/resetGain",
+
+  piShockSendMode = "piShock/send/mode",
+  piShockSendIntensity = "piShock/send/intensity",
+  piShockSendDuration = "piShock/send/duration",
+  piShockSendSend = "piShock/send/send",
+
+  // piShockRecvShock = "piShock/recv/shock",
+  // piShockRecvVibrate = "piShock/recv/vibrate",
+  // piShockRecvBeep = "piShock/recv/beep",
+  // piShockRecvIntensity = "piShock/recv/intensity",
+  // piShockRecvDuration = "piShock/recv/duration",
+  // piShockRecvSend = "piShock/recv/send",
 }
 export type ClientConfigData = {
   [ClientConfig.menuOpen]: boolean;
@@ -82,6 +94,18 @@ export type ClientConfigData = {
   [ClientConfig.vmMute]: boolean;
   [ClientConfig.vmGain]: number;
   [ClientConfig.vmResetGain]: boolean;
+
+  [ClientConfig.piShockSendMode]: number;
+  [ClientConfig.piShockSendIntensity]: number;
+  [ClientConfig.piShockSendDuration]: number;
+  [ClientConfig.piShockSendSend]: boolean;
+
+  // [ClientConfig.piShockRecvShock]: boolean;
+  // [ClientConfig.piShockRecvVibrate]: boolean;
+  // [ClientConfig.piShockRecvBeep]: boolean;
+  // [ClientConfig.piShockRecvIntensity]: number;
+  // [ClientConfig.piShockRecvDuration]: number;
+  // [ClientConfig.piShockRecvSend]: boolean;
 };
 
 class ModuleRunner {
@@ -105,6 +129,18 @@ class ModuleRunner {
     [ClientConfig.vmMute]: false,
     [ClientConfig.vmGain]: 0,
     [ClientConfig.vmResetGain]: false,
+
+    [ClientConfig.piShockSendMode]: 0,
+    [ClientConfig.piShockSendIntensity]: 0,
+    [ClientConfig.piShockSendDuration]: 0,
+    [ClientConfig.piShockSendSend]: false,
+
+    // [ClientConfig.piShockRecvShock]: false,
+    // [ClientConfig.piShockRecvVibrate]: false,
+    // [ClientConfig.piShockRecvBeep]: false,
+    // [ClientConfig.piShockRecvIntensity]: 0,
+    // [ClientConfig.piShockRecvDuration]: 0,
+    // [ClientConfig.piShockRecvSend]: false,
   };
 
   listeners: Record<
@@ -154,7 +190,7 @@ class ModuleRunner {
           (parameter as ClientConfig) !== ClientConfig.menuOpen &&
           !this.config[ClientConfig.menuOpen]
         )
-          return this.updateClientConfig();
+          return;
 
         // @ts-ignore Indexing by string
         this.config[parameter] = data.value;

@@ -21,6 +21,15 @@ interface Config {
       lyrics: boolean;
       interval: number;
     };
+    pishock: {
+      username: string;
+      apiKey: string;
+      code: string;
+    };
+    xsOverlay: {
+      enabled: boolean;
+      port: number;
+    };
   };
 }
 
@@ -59,6 +68,15 @@ const config = (() => {
         refreshToken: "",
         lyrics: true,
         interval: 3000,
+      },
+      pishock: {
+        username: "",
+        apiKey: "",
+        code: "",
+      },
+      xsOverlay: {
+        enabled: false,
+        port: 42070,
       },
     },
   };

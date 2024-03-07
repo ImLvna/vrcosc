@@ -12,7 +12,7 @@ const createWindow = () => {
 let configMod: typeof import("./config");
 
 app.whenReady().then(async () => {
-  const tray = new Tray("static/icon.png");
+  const tray = new Tray("resources/static/icon.png");
   const contextMenu = Menu.buildFromTemplate([
     { label: "Close", click: () => app.quit() },
   ]);
