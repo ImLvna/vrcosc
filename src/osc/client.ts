@@ -4,7 +4,7 @@ import config from "../config";
 function makeClient() {
   const newClient = new Client(
     config.connect.split(":")[0],
-    Number(config.connect.split(":")[1]),
+    Number(config.connect.split(":")[1])
   );
 
   newClient.sendMessage = (addr, data, callback) => {
@@ -25,10 +25,6 @@ function makeClient() {
         newArgs = Object.values(data) as any;
         break;
     }
-
-    newArgs = newArgs.map((i: number | boolean) =>
-      typeof i === "boolean" ? (i ? 1 : 0) : i,
-    );
 
     if (callback) {
       newArgs.push(callback);
