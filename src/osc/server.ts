@@ -1,8 +1,21 @@
 import { Server } from "node-osc";
+import { OSCQAccess, OSCQueryServer } from "oscquery";
 import config from "../config";
 import { OscMessageArgs, OscMessageType } from "./client";
 
-const server = new Server(config.listen, "127.0.0.1");
+const server = new Server(config.listen, "0.0.0.0");
+
+const query = new OSCQueryServer({
+  serviceName: "VRCOSC",
+  oscPort: config.listen,
+  httpPort: config.listen + 1,
+});
+query.addMethod("/avatar", {
+  description: "Change avatar",
+  access: OSCQAccess.READWRITE,
+});
+
+query.start();
 
 export const OscIncMessageArgs: Record<
   OscMessageType,
@@ -38,7 +51,7 @@ server.on("message", (data) => {
     const value = params.pop();
     const parameter = address.replace(
       `${OscMessageType.AvatarParameters}/`,
-      "",
+      ""
     );
     address = OscMessageType.AvatarParameters;
     params = [parameter || "", value || 0];
@@ -50,14 +63,11 @@ server.on("message", (data) => {
     return;
   }
 
-  const parsedParams = params.reduce(
-    (acc, param, i) => {
-      // @ts-ignore Indexing by string
-      acc[Object.keys(OscIncMessageArgs[address])[i]] = param;
-      return acc;
-    },
-    {} as OscMessageArgs[OscMessageType],
-  );
+  const parsedParams = params.reduce((acc, param, i) => {
+    // @ts-ignore Indexing by string
+    acc[Object.keys(OscIncMessageArgs[address])[i]] = param;
+    return acc;
+  }, {} as OscMessageArgs[OscMessageType]);
 
   if (config.debug) console.log(address, parsedParams);
 
