@@ -4,7 +4,7 @@ import config from "../config";
 function makeClient() {
   const newClient = new Client(
     config.connect.split(":")[0],
-    Number(config.connect.split(":")[1])
+    Number(config.connect.split(":")[1]),
   );
 
   newClient.sendMessage = (addr, data, callback) => {
