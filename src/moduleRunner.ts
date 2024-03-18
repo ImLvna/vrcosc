@@ -6,6 +6,7 @@ export enum Events {
   chatboxBuilt = "chatboxBuilt",
   configUpdate = "configUpdate",
   reloadParams = "reloadParams",
+  initalizeParams = "initalizeParams",
 }
 type EventsData = {
   [Events.buildChatbox]: {
@@ -23,6 +24,11 @@ type EventsData = {
     return: void;
   };
   [Events.reloadParams]: {
+    args: [];
+    // biome-ignore lint/suspicious/noConfusingVoidType: <explanation>
+    return: void;
+  };
+  [Events.initalizeParams]: {
     args: [];
     // biome-ignore lint/suspicious/noConfusingVoidType: <explanation>
     return: void;
@@ -125,8 +131,11 @@ export type ClientConfigData = {
 class ModuleRunner {
   config: ClientConfigData = {
     [ClientConfig.menuOpen]: false,
+
     [ClientConfig.chatboxEnabled]: true,
+
     [ClientConfig.messageEnabled]: true,
+
     [ClientConfig.messageSet1]: true,
     [ClientConfig.messageSet2]: true,
     [ClientConfig.messageSet3]: true,
@@ -134,10 +143,14 @@ class ModuleRunner {
     [ClientConfig.messageSet5]: true,
     [ClientConfig.messageSet6]: true,
     [ClientConfig.messageSet7]: true,
+
     [ClientConfig.spotifyEnabled]: true,
+
     [ClientConfig.timeEnabled]: true,
+
     [ClientConfig.windowEnabled]: false,
     [ClientConfig.windowTitle]: true,
+
     [ClientConfig.vmStripNumber]: 0,
     [ClientConfig.vmA1]: false,
     [ClientConfig.vmA2]: false,
@@ -172,6 +185,7 @@ class ModuleRunner {
     chatboxBuilt: [],
     configUpdate: [],
     reloadParams: [],
+    initalizeParams: [],
   };
 
   async updateClientConfig() {
@@ -187,7 +201,7 @@ class ModuleRunner {
 
   updateParameter<T extends ClientConfig>(
     parameter: T,
-    value: ClientConfigData[T]
+    value: ClientConfigData[T],
   ) {
     this.config[parameter] = value;
     client.sendMessage(OscMessageType.AvatarParameters, {
@@ -198,7 +212,6 @@ class ModuleRunner {
 
   constructor() {
     this.config[ClientConfig.menuOpen] = false;
-    this.updateClientConfig();
 
     server.on(OscMessageType.AvatarParameters, (data) => {
       if (data.parameter.startsWith("LvnOsc/")) {
@@ -219,7 +232,7 @@ class ModuleRunner {
         this.emit(
           Events.configUpdate,
           parameter as ClientConfig,
-          data.value as ClientConfigData[ClientConfig]
+          data.value as ClientConfigData[ClientConfig],
         );
       }
     });
@@ -229,7 +242,7 @@ class ModuleRunner {
 
   on<T extends Events>(
     event: T,
-    listener: (...args: EventsData[T]["args"]) => EventsData[T]["return"]
+    listener: (...args: EventsData[T]["args"]) => EventsData[T]["return"],
   ): void {
     // @ts-ignore Indexing by string
     this.listeners[event].push(listener);

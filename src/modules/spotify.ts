@@ -21,6 +21,14 @@ interface LyricsResponse {
 
 let lyrics: LyricsResponse;
 
+moduleRunner.on(Events.initalizeParams, () => {
+  moduleRunner.config[ClientConfig.spotifyEnabled] = !!(
+    config.modules.spotify.clientId &&
+    config.modules.spotify.clientSecret &&
+    config.modules.spotify.redirectUri
+  );
+});
+
 if (!config.modules.spotify.clientId) {
   console.error("Spotify module requires a clientId");
 } else

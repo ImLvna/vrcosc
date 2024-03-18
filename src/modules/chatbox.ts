@@ -13,6 +13,7 @@ function getPossibleMessages() {
 
     possibleMessages = possibleMessages.concat(config.modules.chatbox.sets[i]);
   }
+  return possibleMessages;
 }
 
 moduleRunner.on(Events.buildChatbox, () => {
@@ -23,26 +24,58 @@ moduleRunner.on(Events.buildChatbox, () => {
   return possibleMessages[idx];
 });
 
-function isSetEnabled(set: number) {
+function getSetConfig(set: number) {
   switch (set) {
     case 0:
-      return moduleRunner.config[ClientConfig.messageSet1];
+      return ClientConfig.messageSet1;
     case 1:
-      return moduleRunner.config[ClientConfig.messageSet2];
+      return ClientConfig.messageSet2;
     case 2:
-      return moduleRunner.config[ClientConfig.messageSet3];
+      return ClientConfig.messageSet3;
     case 3:
-      return moduleRunner.config[ClientConfig.messageSet4];
+      return ClientConfig.messageSet4;
     case 4:
-      return moduleRunner.config[ClientConfig.messageSet5];
+      return ClientConfig.messageSet5;
     case 5:
-      return moduleRunner.config[ClientConfig.messageSet6];
+      return ClientConfig.messageSet6;
     case 6:
-      return moduleRunner.config[ClientConfig.messageSet7];
+      return ClientConfig.messageSet7;
     default:
-      return false;
+      return null;
   }
 }
+
+function isSetEnabled(set: number) {
+  return moduleRunner.config[getSetConfig(set)];
+}
+
+moduleRunner.on(Events.initalizeParams, () => {
+  console.log("Initializing chatbox params");
+  moduleRunner.config[ClientConfig.messageSet1] =
+    !!config.modules.chatbox.sets[0] &&
+    config.modules.chatbox.sets[0].length > 0;
+  moduleRunner.config[ClientConfig.messageSet2] =
+    !!config.modules.chatbox.sets[1] &&
+    config.modules.chatbox.sets[1].length > 0;
+  moduleRunner.config[ClientConfig.messageSet3] =
+    !!config.modules.chatbox.sets[2] &&
+    config.modules.chatbox.sets[2].length > 0;
+  moduleRunner.config[ClientConfig.messageSet4] =
+    !!config.modules.chatbox.sets[3] &&
+    config.modules.chatbox.sets[3].length > 0;
+  moduleRunner.config[ClientConfig.messageSet5] =
+    !!config.modules.chatbox.sets[4] &&
+    config.modules.chatbox.sets[4].length > 0;
+  moduleRunner.config[ClientConfig.messageSet6] =
+    !!config.modules.chatbox.sets[5] &&
+    config.modules.chatbox.sets[5].length > 0;
+  moduleRunner.config[ClientConfig.messageSet7] =
+    !!config.modules.chatbox.sets[6] &&
+    config.modules.chatbox.sets[6].length > 0;
+
+  moduleRunner.config[ClientConfig.messageEnabled] =
+    config.modules.chatbox.sets.flat().length > 0;
+});
 
 setInterval(() => {
   const possibleMessages = getPossibleMessages();

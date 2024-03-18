@@ -51,7 +51,7 @@ server.on("message", (data) => {
     const value = params.pop();
     const parameter = address.replace(
       `${OscMessageType.AvatarParameters}/`,
-      ""
+      "",
     );
     address = OscMessageType.AvatarParameters;
     params = [parameter || "", value || 0];
@@ -63,11 +63,14 @@ server.on("message", (data) => {
     return;
   }
 
-  const parsedParams = params.reduce((acc, param, i) => {
-    // @ts-ignore Indexing by string
-    acc[Object.keys(OscIncMessageArgs[address])[i]] = param;
-    return acc;
-  }, {} as OscMessageArgs[OscMessageType]);
+  const parsedParams = params.reduce(
+    (acc, param, i) => {
+      // @ts-ignore Indexing by string
+      acc[Object.keys(OscIncMessageArgs[address])[i]] = param;
+      return acc;
+    },
+    {} as OscMessageArgs[OscMessageType],
+  );
 
   if (config.debug) console.log(address, parsedParams);
 
