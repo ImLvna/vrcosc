@@ -1,4 +1,5 @@
-import moduleRunner, { Events } from "../moduleRunner";
+import { Events } from "../../shared/moduleRunner";
+import moduleRunner from "../moduleRunner";
 import "./chatbox";
 import "./pishock";
 import "./spotify";

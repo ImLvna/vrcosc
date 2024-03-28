@@ -1,5 +1,5 @@
 import config from "./config";
-import moduleRunner, { ClientConfig, Events } from "./moduleRunner";
+import moduleRunner from "./moduleRunner";
 import client, { OscMessageType } from "./osc/client";
 
 let lastChatbox = "";
@@ -24,6 +24,7 @@ moduleRunner.on(Events.chatboxBuilt, (chatbox) => {
     instant: true,
     notification: false,
   });
+  moduleRunner.emit(Events.chatboxToClient, chatbox);
 });
 
 setInterval(() => {
@@ -39,8 +40,10 @@ moduleRunner.on(Events.configUpdate, (config, value) => {
         instant: true,
         notification: false,
       });
+      moduleRunner.emit(Events.chatboxToClient, "");
     }
   }
 });
 
+import { ClientConfig, Events } from "../shared/moduleRunner";
 import "./modules";

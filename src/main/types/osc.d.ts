@@ -3,6 +3,7 @@ import { OscMessageArgs, OscMessageType } from "../osc/client";
 
 declare module "node-osc" {
   interface Client {
+    sendToClient: boolean;
     _sock: Socket;
     sendMessage: <T extends OscMessageType>(
       address: T,

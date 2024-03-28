@@ -7,9 +7,12 @@ function makeClient() {
     Number(config.connect.split(":")[1]),
   );
 
+  newClient.sendToClient = true;
+
   newClient.sendMessage = (addr, data, callback) => {
+    if (!newClient.sendToClient) return;
     let address: string = addr;
-    let newArgs = [];
+    let newArgs: any[] = [];
 
     switch (addr) {
       case OscMessageType.AvatarParameters:

@@ -9,7 +9,7 @@ interface Config {
   debug: boolean;
   modules: {
     chatbox: {
-      sets: string[][];
+      sets: [boolean, ...string[]][];
       random: boolean;
       interval: number;
     };
@@ -59,7 +59,7 @@ const config = (() => {
     debug: false,
     modules: {
       chatbox: {
-        sets: [[]],
+        sets: [],
         random: false,
         interval: 3000,
       },

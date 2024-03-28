@@ -1,5 +1,6 @@
+import { ClientConfig, Events } from "../../shared/moduleRunner";
 import * as pishock from "../lib/pishock";
-import moduleRunner, { ClientConfig, Events } from "../moduleRunner";
+import moduleRunner from "../moduleRunner";
 
 moduleRunner.on(Events.configUpdate, (config, value) => {
   if (config === ClientConfig.piShockSendSend && value) {

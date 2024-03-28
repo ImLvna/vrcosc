@@ -1,6 +1,7 @@
 import SpotifyWebApi from "spotify-web-api-node";
+import { ClientConfig, Events } from "../../shared/moduleRunner";
 import config, { save } from "../config";
-import moduleRunner, { ClientConfig, Events } from "../moduleRunner";
+import moduleRunner from "../moduleRunner";
 
 let ready = false;
 

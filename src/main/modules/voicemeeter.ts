@@ -1,5 +1,6 @@
 import voicemeeter from "voicemeeter-remote";
-import moduleRunner, { ClientConfig, Events } from "../moduleRunner";
+import { ClientConfig, Events } from "../../shared/moduleRunner";
+import moduleRunner from "../moduleRunner";
 
 (async () => {
   if (process.platform !== "win32") {

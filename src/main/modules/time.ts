@@ -1,4 +1,5 @@
-import moduleRunner, { ClientConfig, Events } from "../moduleRunner";
+import { ClientConfig, Events } from "../../shared/moduleRunner";
+import moduleRunner from "../moduleRunner";
 
 moduleRunner.on(Events.buildChatbox, () => {
   if (!moduleRunner.config[ClientConfig.timeEnabled]) return;
