@@ -15,14 +15,7 @@ export class IPCModuleRunner implements ModuleRunnerBase {
 
   async updateClientConfig(): Promise<void> {
     return await window.electron.moduleRunner.callModuleRunnerFunc(
-      "updateClientConfig"
-    );
-  }
-
-  setSendToClient(toggle: boolean): void {
-    window.electron.moduleRunner.callModuleRunnerFunc(
-      "setSendToClient",
-      toggle
+      "updateClientConfig",
     );
   }
 
@@ -30,13 +23,13 @@ export class IPCModuleRunner implements ModuleRunnerBase {
     window.electron.moduleRunner.callModuleRunnerFunc(
       "updateParameter",
       parameter,
-      value
+      value,
     );
   }
 
   on<T extends Events>(
     event: T,
-    listener: (...args: EventsData[T]["args"]) => EventsData[T]["return"]
+    listener: (...args: EventsData[T]["args"]) => EventsData[T]["return"],
   ): void {
     window.electron.moduleRunner.onModuleRunnerEvent(event, listener);
   }
@@ -48,7 +41,7 @@ export class IPCModuleRunner implements ModuleRunnerBase {
     return window.electron.moduleRunner.callModuleRunnerFunc(
       "emit",
       event,
-      args
+      args,
     );
   }
 }

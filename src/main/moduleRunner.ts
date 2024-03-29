@@ -70,6 +70,7 @@ class ModuleRunner implements ModuleRunnerBase {
     configUpdate: [],
     reloadParams: [],
     initalizeParams: [],
+    serverConfigUpdate: [],
   };
 
   getConfig() {
@@ -77,10 +78,6 @@ class ModuleRunner implements ModuleRunnerBase {
   }
   setConfig(config: ClientConfigData) {
     this.config = config;
-  }
-
-  setSendToClient(toggle: boolean) {
-    client.sendToClient = toggle;
   }
 
   async updateClientConfig() {
@@ -99,6 +96,7 @@ class ModuleRunner implements ModuleRunnerBase {
     value: ClientConfigData[T],
   ) {
     this.config[parameter] = value;
+    this.emit(Events.configUpdate, parameter, value);
     client.sendMessage(OscMessageType.AvatarParameters, {
       parameter: `LvnOsc/${parameter}`,
       value,

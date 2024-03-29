@@ -1,4 +1,6 @@
+import { ipcMain } from "electron";
 import { Client } from "node-osc";
+import { IPCMessage } from "../../shared/ipc";
 import config from "../config";
 
 function makeClient() {
@@ -8,6 +10,10 @@ function makeClient() {
   );
 
   newClient.sendToClient = true;
+
+  ipcMain.on(IPCMessage.setSendToClient, (_, value) => {
+    newClient.sendToClient = value;
+  });
 
   newClient.sendMessage = (addr, data, callback) => {
     if (!newClient.sendToClient) return;

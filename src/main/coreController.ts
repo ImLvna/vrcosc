@@ -1,3 +1,4 @@
+import { ClientConfig, Events } from "../shared/moduleRunner";
 import config from "./config";
 import moduleRunner from "./moduleRunner";
 import client, { OscMessageType } from "./osc/client";
@@ -27,10 +28,6 @@ moduleRunner.on(Events.chatboxBuilt, (chatbox) => {
   moduleRunner.emit(Events.chatboxToClient, chatbox);
 });
 
-setInterval(() => {
-  moduleRunner.emit(Events.buildChatbox);
-}, 250);
-
 moduleRunner.on(Events.configUpdate, (config, value) => {
   if (config === ClientConfig.chatboxEnabled) {
     if (!value) {
@@ -45,5 +42,8 @@ moduleRunner.on(Events.configUpdate, (config, value) => {
   }
 });
 
-import { ClientConfig, Events } from "../shared/moduleRunner";
+setInterval(() => {
+  moduleRunner.emit(Events.buildChatbox);
+}, 250);
+
 import "./modules";

@@ -101,7 +101,7 @@ if (!config.modules.spotify.clientId) {
 
         const oldSongstr = songstr;
 
-        if (track.body.is_playing) {
+        if (track.body.is_playing && track.body.item) {
           songstr = `📻 ${track.body.item?.name} - ${
             (track.body.item as any).artists[0].name
           }`;
@@ -127,9 +127,6 @@ if (!config.modules.spotify.clientId) {
             console.error(e);
           }
         }
-      } catch (e) {
-        console.error("Failed to fetch current playback state");
-        console.error(e);
-      }
+      } catch (e) {}
     }, config.modules.spotify.interval);
   })();

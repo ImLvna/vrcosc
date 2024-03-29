@@ -3,6 +3,7 @@ export enum Events {
   chatboxBuilt = "chatboxBuilt",
   chatboxToClient = "chatboxToClient",
   configUpdate = "configUpdate",
+  serverConfigUpdate = "serverConfigUpdate",
   reloadParams = "reloadParams",
   initalizeParams = "initalizeParams",
 }
@@ -32,6 +33,11 @@ export type EventsData = {
     return: void;
   };
   [Events.initalizeParams]: {
+    args: [];
+    // biome-ignore lint/suspicious/noConfusingVoidType: <explanation>
+    return: void;
+  };
+  [Events.serverConfigUpdate]: {
     args: [];
     // biome-ignore lint/suspicious/noConfusingVoidType: <explanation>
     return: void;
@@ -136,8 +142,6 @@ export abstract class ModuleRunnerBase {
   abstract setConfig(config: ClientConfigData);
 
   abstract updateClientConfig(): Promise<void>;
-
-  abstract setSendToClient(toggle: boolean): void;
 
   abstract updateParameter<T extends ClientConfig>(
     parameter: T,

@@ -13,7 +13,9 @@ function getPossibleMessages() {
     if (!isSetEnabled(i)) continue;
 
     possibleMessages = possibleMessages.concat(
-      config.modules.chatbox.sets[i].filter(String) as string[],
+      config.modules.chatbox.sets[i].filter(
+        (i) => typeof i === "string",
+      ) as string[],
     );
   }
   return possibleMessages;
