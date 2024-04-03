@@ -1,41 +1,16 @@
 <script lang="ts">
-  import { writable, type Writable } from "svelte/store";
-  import type { Config } from "../../../../shared/config";
-  import { ClientConfig, Events } from "../../../../shared/moduleRunner";
+  import { writable } from "svelte/store";
+  import { ClientConfig } from "../../../../shared/moduleRunner";
   import Switch from "../../components/Switch.svelte";
   import moduleRunner from "../../lib/moduleRunner";
 
-  const enabled = writable(false);
+  let config = writable(moduleRunner.config);
 
-  let config: Writable<ClientConfig | null> = writable(null);
+  let serverConfig = writable(
+    window.electron.config.getConfigModule("chatbox")
+  );
 
-  let serverConfig: Writable<Config["modules"]["chatbox"] | null> =
-    writable(null);
-
-  moduleRunner.getConfig().then((newConfig) => {
-    config.set(newConfig);
-    enabled.set(newConfig[ClientConfig.chatboxEnabled]);
-    enabled.subscribe((value) => {
-      moduleRunner.updateParameter(ClientConfig.chatboxEnabled, value);
-    });
-
-    moduleRunner.on(Events.configUpdate, (newVar, val) => {
-      $config[newVar] = val;
-      if (newVar === ClientConfig.chatboxEnabled) {
-        enabled.set(val as boolean);
-      }
-    });
-  });
-
-  moduleRunner.getServerConfig().then((newConfig) => {
-    $serverConfig = newConfig.modules.chatbox;
-    serverConfig.subscribe(async (value) => {
-      const newerConfig = await moduleRunner.getServerConfig();
-      newerConfig.modules.chatbox = value;
-      moduleRunner.setServerConfig(newerConfig);
-      moduleRunner.saveServerConfig();
-    });
-  });
+  $: window.electron.config.setConfigModule("chatbox", $serverConfig);
 
   const indexToSetEnum = (i: number) =>
     [
@@ -46,18 +21,32 @@
       ClientConfig.messageSet5,
       ClientConfig.messageSet6,
       ClientConfig.messageSet7,
-    ][i];
+    ][i] as
+      | ClientConfig.messageSet1
+      | ClientConfig.messageSet2
+      | ClientConfig.messageSet3
+      | ClientConfig.messageSet4
+      | ClientConfig.messageSet5
+      | ClientConfig.messageSet6
+      | ClientConfig.messageSet7;
 </script>
 
 <label for="chatboxEnabled" class="text-white">Enable Chatbox</label>
-<Switch bind:value={$enabled} />
+<Switch
+  bind:value={$config[ClientConfig.chatboxEnabled]}
+  on:change={() =>
+    moduleRunner.updateParameter(
+      ClientConfig.chatboxEnabled,
+      $config[ClientConfig.chatboxEnabled]
+    )}
+/>
 
 {#if !config || !$serverConfig}
   <div>Loading...</div>
 {:else}
-  <div>
+  <div class="size-full">
     <h1>Sets</h1>
-    <div>
+    <div class="w-full">
       {#each $serverConfig.sets as set, i}
         <div>Set {i + 1}</div>
         <Switch
@@ -69,10 +58,32 @@
             )}
         />
         <div>Messages</div>
-        <div>
+        <div class="flex flex-col w-full">
           {#each set.filter((i) => typeof i === "string") as _, j}
-            <input type="text" bind:value={$serverConfig.sets[i][j + 1]} />
+            <div class="w-full">
+              <input
+                class="w-11/12"
+                type="text"
+                bind:value={$serverConfig.sets[i][j + 1]}
+              />
+              <button
+                on:click={() => {
+                  $serverConfig.sets[i].splice(j + 1, 1);
+                  serverConfig.set($serverConfig);
+                }}
+              >
+                X
+              </button>
+            </div>
           {/each}
+          <button
+            on:click={() => {
+              $serverConfig.sets[i].push("");
+              serverConfig.set($serverConfig);
+            }}
+          >
+            Add
+          </button>
         </div>
       {/each}
     </div>

@@ -64,14 +64,12 @@ export function save() {
   return writeFileSync(path, JSON.stringify(config, null, 2));
 }
 
-ipcMain.on(
-  IPCMessage.getModuleConfig,
-  (event, module: keyof Config["modules"]) => {
-    event.returnValue = config.modules[module];
-  },
-);
+ipcMain.on(IPCMessage.getModuleConfig, (event, module) => {
+  event.returnValue = config.modules[module];
+});
 
-ipcMain.on(IPCMessage.setModuleConfig, (_, module, data) => {
-  // config.modules[module as keyof Config["modules"]] = data;
+ipcMain.on(IPCMessage.setModuleConfig, (event, module, data) => {
+  config.modules[module as any] = data;
   save();
+  event.returnValue = true;
 });

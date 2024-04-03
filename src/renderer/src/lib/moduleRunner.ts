@@ -6,11 +6,8 @@ import type {
 } from "../../../shared/moduleRunner";
 
 export class IPCModuleRunner implements ModuleRunnerBase {
-  async getConfig() {
-    return await window.electron.moduleRunner.callModuleRunnerFunc("getConfig");
-  }
-  setConfig(config: ClientConfigData) {
-    window.electron.moduleRunner.callModuleRunnerFunc("setConfig", config);
+  get config(): ClientConfigData {
+    return window.electron.moduleRunner.getModuleRunnerConfig();
   }
 
   async updateClientConfig(): Promise<void> {

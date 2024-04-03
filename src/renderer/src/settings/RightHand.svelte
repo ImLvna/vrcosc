@@ -2,14 +2,11 @@
   import { writable } from "svelte/store";
   import { Events } from "../../../shared/moduleRunner";
   import Switch from "../components/Switch.svelte";
-  import {
-    default as ipcModuleRunner,
-    default as moduleRunner,
-  } from "../lib/moduleRunner";
+  import { default as ipcModuleRunner } from "../lib/moduleRunner";
 
   const sendToClient = writable(true);
 
-  sendToClient.subscribe(moduleRunner.setSendToClient);
+  sendToClient.subscribe(window.electron.other.setSendToClient);
 
   const chatboxText = writable("");
 

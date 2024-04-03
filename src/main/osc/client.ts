@@ -11,7 +11,7 @@ function makeClient() {
 
   newClient.sendToClient = true;
 
-  ipcMain.on(IPCMessage.setSendToClient, (_, value) => {
+  ipcMain.handle(IPCMessage.setSendToClient, (_, value) => {
     newClient.sendToClient = value;
   });
 

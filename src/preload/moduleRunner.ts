@@ -24,27 +24,13 @@ ipcRenderer.on(IPCMessage.onModuleRunnerEvent, (_, event, args) => {
   }
 });
 
-const callModuleRunnerFuncPromises = new Map<number, (value: any) => void>();
 export function callModuleRunnerFunc<T extends keyof ModuleRunnerBase>(
   func: T,
-  ...args: Parameters<ModuleRunnerBase[T]>
-): Promise<ReturnType<ModuleRunnerBase[T]>> {
-  const nonce = Math.random();
-  const promise = new Promise<any>((resolve, reject) => {
-    callModuleRunnerFuncPromises.set(nonce, (value) => {
-      callModuleRunnerFuncPromises.delete(nonce);
-      if (value instanceof Error) {
-        reject(value);
-      } else {
-        resolve(value);
-      }
-    });
-  });
-  ipcRenderer.send(IPCMessage.callModuleRunnerFunc, func, nonce, args);
-  return promise;
+  ...args: any[]
+): Promise<any> {
+  return ipcRenderer.sendSync(IPCMessage.callModuleRunnerFunc, func, args);
 }
-ipcRenderer.on(IPCMessage.moduleRunnerFuncReturn, (_, nonce, value) => {
-  const promise = callModuleRunnerFuncPromises.get(nonce);
-  if (!promise) return;
-  promise(value);
-});
+
+export function getModuleRunnerConfig() {
+  return ipcRenderer.sendSync(IPCMessage.getModuleRunnerConfig);
+}
