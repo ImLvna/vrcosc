@@ -1,37 +1,9 @@
 import { existsSync, readFileSync, writeFileSync } from "fs";
 import { join } from "path";
+import { ipcMain } from "electron";
 import { cwd } from "process";
-
-interface Config {
-  listen: number;
-  connect: string;
-  verbose: boolean;
-  debug: boolean;
-  modules: {
-    chatbox: {
-      sets: [boolean, ...string[]][];
-      random: boolean;
-      interval: number;
-    };
-    spotify: {
-      clientId: string;
-      clientSecret: string;
-      redirectUri: string;
-      refreshToken: string;
-      lyrics: boolean;
-      interval: number;
-    };
-    pishock: {
-      username: string;
-      apiKey: string;
-      code: string;
-    };
-    xsOverlay: {
-      enabled: boolean;
-      port: number;
-    };
-  };
-}
+import { IPCMessage } from "../shared/ipc";
+import { Config } from "./../shared/config";
 
 function findConfigPath() {
   if (existsSync(join(cwd(), "config.json"))) {
@@ -87,6 +59,17 @@ const config = (() => {
 export default config;
 
 export function save() {
+  console.log("Saving config");
   const path = findConfigPath();
   return writeFileSync(path, JSON.stringify(config, null, 2));
 }
+
+ipcMain.on(IPCMessage.getModuleConfig, (event, module) => {
+  event.returnValue = config.modules[module];
+});
+
+ipcMain.on(IPCMessage.setModuleConfig, (event, module, data) => {
+  config.modules[module as any] = data;
+  save();
+  event.returnValue = true;
+});

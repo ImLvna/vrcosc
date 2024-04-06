@@ -70,18 +70,8 @@ class ModuleRunner implements ModuleRunnerBase {
     configUpdate: [],
     reloadParams: [],
     initalizeParams: [],
+    serverConfigUpdate: [],
   };
-
-  getConfig() {
-    return Promise.resolve(this.config);
-  }
-  setConfig(config: ClientConfigData) {
-    this.config = config;
-  }
-
-  setSendToClient(toggle: boolean) {
-    client.sendToClient = toggle;
-  }
 
   async updateClientConfig() {
     console.log("Avatar Osc config out of date, updating...");
@@ -99,6 +89,7 @@ class ModuleRunner implements ModuleRunnerBase {
     value: ClientConfigData[T],
   ) {
     this.config[parameter] = value;
+    this.emit(Events.configUpdate, parameter, value);
     client.sendMessage(OscMessageType.AvatarParameters, {
       parameter: `LvnOsc/${parameter}`,
       value,
@@ -136,26 +127,22 @@ class ModuleRunner implements ModuleRunnerBase {
 
     ipcMain.on(
       IPCMessage.callModuleRunnerFunc,
-      async (_, func: string, nonce: number, args: any[]) => {
+      async (event, func: string, args: any[]) => {
         if (typeof this[func] === "function") {
           try {
             const res = await this[func](...args);
-            mainWindow?.webContents.send(
-              IPCMessage.moduleRunnerFuncReturn,
-              nonce,
-              res,
-            );
+            event.returnValue = res;
           } catch (e) {
             console.error(e);
-            mainWindow?.webContents.send(
-              IPCMessage.moduleRunnerFuncReturn,
-              nonce,
-              e,
-            );
+            event.returnValue = e;
           }
         }
       },
     );
+
+    ipcMain.on(IPCMessage.getModuleRunnerConfig, (event) => {
+      event.returnValue = this.config;
+    });
   }
 
   on<T extends Events>(
