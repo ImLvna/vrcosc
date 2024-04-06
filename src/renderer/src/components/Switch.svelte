@@ -20,7 +20,6 @@
   role="switch"
   aria-checked={value}
   tabindex="0"
-  class:justify-end={value}
 >
   <div
     class="circle w-1/2 h-full rounded-full relative"

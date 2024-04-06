@@ -6,7 +6,7 @@
 
   const panes = [Main, Modules];
 
-  const pane = writable(panes[0].name);
+  const pane = writable(panes[1].name);
 </script>
 
 <div
