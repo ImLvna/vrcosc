@@ -3,7 +3,11 @@ import { OSCQAccess, OSCQueryServer } from "oscquery";
 import config from "../config";
 import { OscMessageArgs, OscMessageType } from "./client";
 
-const server = new Server(config.listen, "0.0.0.0");
+// @ts-ignore
+const server = new Server(config.listen.toString(), "0.0.0.0", () => {
+  if (config.verbose)
+    console.log(`Listening for OSC messages on ${config.listen}`);
+});
 
 const query = new OSCQueryServer({
   serviceName: "VRCOSC",
@@ -51,7 +55,7 @@ server.on("message", (data) => {
     const value = params.pop();
     const parameter = address.replace(
       `${OscMessageType.AvatarParameters}/`,
-      "",
+      ""
     );
     address = OscMessageType.AvatarParameters;
     params = [parameter || "", value || 0];
@@ -63,14 +67,11 @@ server.on("message", (data) => {
     return;
   }
 
-  const parsedParams = params.reduce(
-    (acc, param, i) => {
-      // @ts-ignore Indexing by string
-      acc[Object.keys(OscIncMessageArgs[address])[i]] = param;
-      return acc;
-    },
-    {} as OscMessageArgs[OscMessageType],
-  );
+  const parsedParams = params.reduce((acc, param, i) => {
+    // @ts-ignore Indexing by string
+    acc[Object.keys(OscIncMessageArgs[address])[i]] = param;
+    return acc;
+  }, {} as OscMessageArgs[OscMessageType]);
 
   if (config.debug) console.log(address, parsedParams);
 

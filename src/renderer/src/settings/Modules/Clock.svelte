@@ -1,11 +1,16 @@
 <script lang="ts">
   import { writable } from "svelte/store";
-  import { ClientConfig } from "../../../../shared/moduleRunner";
+  import { ClientConfig, Events } from "../../../../shared/moduleRunner";
   import Colored from "../../components/Colored.svelte";
   import Switch from "../../components/Switch.svelte";
   import moduleRunner from "../../lib/moduleRunner";
 
   let config = writable(moduleRunner.config);
+
+  moduleRunner.on(
+    Events.configUpdate,
+    (p, v) => (($config[p] as number | boolean) = v)
+  );
 </script>
 
 <Colored
