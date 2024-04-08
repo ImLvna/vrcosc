@@ -26,5 +26,8 @@ export interface Config {
       enabled: boolean;
       port: number;
     };
+    ui: {
+      color: string;
+    };
   };
 }

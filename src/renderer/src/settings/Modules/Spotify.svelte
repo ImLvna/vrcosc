@@ -2,6 +2,7 @@
   import { writable } from "svelte/store";
   import { ClientConfig } from "../../../../shared/moduleRunner";
   import Collapse from "../../components/Collapse.svelte";
+  import Colored from "../../components/Colored.svelte";
   import Switch from "../../components/Switch.svelte";
   import moduleRunner from "../../lib/moduleRunner";
 
@@ -43,34 +44,40 @@
       <!-- clientId -->
       <div class="w-full flex flex-row justify-between">
         <label for="clientId">Client ID</label>
-        <input
-          class="bg-violet-800"
-          type="text"
-          id="clientId"
-          bind:value={$serverConfig["clientId"]}
-        />
+        <Colored bg={800} class="rounded-xl">
+          <input
+            class="bg-blue-800"
+            type="text"
+            id="clientId"
+            bind:value={$serverConfig["clientId"]}
+          />
+        </Colored>
       </div>
 
       <!-- clientSecret -->
       <div class="w-full flex flex-row justify-between">
         <label for="clientSecret">Client Secret</label>
-        <input
-          class="bg-violet-800"
-          type="text"
-          id="clientSecret"
-          bind:value={$serverConfig["clientSecret"]}
-        />
+        <Colored bg={800} class="rounded-xl">
+          <input
+            class="bg-blue-800"
+            type="text"
+            id="clientSecret"
+            bind:value={$serverConfig["clientSecret"]}
+          />
+        </Colored>
       </div>
 
       <!-- refreshToken -->
       <div class="w-full flex flex-row justify-between">
         <label for="refreshToken">Refresh Token</label>
-        <input
-          class="bg-violet-800"
-          type="text"
-          id="refreshToken"
-          bind:value={$serverConfig["refreshToken"]}
-        />
+        <Colored bg={800} class="rounded-xl">
+          <input
+            class="bg-blue-800"
+            type="text"
+            id="refreshToken"
+            bind:value={$serverConfig["refreshToken"]}
+          />
+        </Colored>
       </div>
 
       <Collapse>
@@ -81,27 +88,35 @@
           <!-- redirectUri -->
           <div class="w-full flex flex-row justify-between">
             <label for="redirectUri">Redirect URI</label>
-            <input
-              class="bg-violet-800"
-              type="text"
-              id="redirectUri"
-              bind:value={$serverConfig["redirectUri"]}
-            />
+            <Colored bg={800} class="rounded-xl">
+              <input
+                type="text"
+                id="redirectUri"
+                bind:value={$serverConfig["redirectUri"]}
+              />
+            </Colored>
           </div>
 
           <!-- interval -->
 
           <div class="w-full flex flex-row justify-between">
             <label for="interval">Polling Interval</label>
-            <input
-              class="bg-violet-800"
-              type="number"
-              id="interval"
-              bind:value={$serverConfig["interval"]}
-            />
+            <Colored bg={800} class="rounded-xl">
+              <input
+                type="number"
+                id="interval"
+                bind:value={$serverConfig["interval"]}
+              />
+            </Colored>
           </div>
         </div>
       </Collapse>
     {/if}
   </div>
 </Collapse>
+
+<style>
+  input {
+    background: inherit;
+  }
+</style>

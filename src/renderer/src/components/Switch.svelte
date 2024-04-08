@@ -1,8 +1,12 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, getContext } from "svelte";
+  import type { Writable } from "svelte/store";
+  import type { Config } from "../../../shared/config";
 
   export let disabled = false;
   export let value = false;
+
+  export let colorOverride: string | undefined = undefined;
 
   const dispatch = createEventDispatcher();
 
@@ -11,6 +15,9 @@
     value = !value;
     dispatch("change", value);
   };
+
+  const uiSettings =
+    getContext<Writable<Config["modules"]["ui"]>>("uiSettings");
 </script>
 
 <div
@@ -22,10 +29,8 @@
   tabindex="0"
 >
   <div
-    class="circle w-1/2 h-full rounded-full relative"
+    class={`circle w-1/2 h-full rounded-full relative bg-${colorOverride ? colorOverride.toLowerCase() : $uiSettings.color.toLowerCase()}-${value ? 400 : 600}`}
     class:active={value}
-    class:bg-violet-400={value}
-    class:bg-violet-900={!value}
   ></div>
 </div>
 

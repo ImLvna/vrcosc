@@ -2,6 +2,7 @@
   import { writable } from "svelte/store";
   import { ClientConfig } from "../../../../shared/moduleRunner";
   import Collapse from "../../components/Collapse.svelte";
+  import Colored from "../../components/Colored.svelte";
   import Switch from "../../components/Switch.svelte";
   import moduleRunner from "../../lib/moduleRunner";
 
@@ -34,7 +35,7 @@
 
 <Collapse>
   <div slot="title" class="flex flex-row justify-between w-full pr-5">
-    <label for="chatboxEnabled" class="text-white self-center">Chatbox</label>
+    <label for="chatboxEnabled" class="self-center">Chatbox</label>
   </div>
   <div slot="titleRight">
     <Switch
@@ -79,11 +80,13 @@
             <div class="flex flex-col w-full">
               {#each set.filter((i) => typeof i === "string") as _, j}
                 <div class="w-full">
-                  <input
-                    class="w-11/12"
-                    type="text"
-                    bind:value={$serverConfig.sets[i][j + 1]}
-                  />
+                  <Colored bg={800} class="rounded-xl">
+                    <input
+                      class="w-11/12"
+                      type="text"
+                      bind:value={$serverConfig.sets[i][j + 1]}
+                    />
+                  </Colored>
                   <button
                     on:click={() => {
                       $serverConfig.sets[i].splice(j + 1, 1);
@@ -109,3 +112,9 @@
     {/if}
   </div>
 </Collapse>
+
+<style>
+  input {
+    background: inherit;
+  }
+</style>

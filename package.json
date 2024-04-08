@@ -21,7 +21,7 @@
     "lint": "biome lint .",
     "format": "biome format . --write",
     "fix": "biome check . --apply",
-    "postinstall": "husky install && electron-builder install-app-deps"
+    "postinstall": "hublue install && electron-builder install-app-deps"
   },
   "keywords": [],
   "author": "",
@@ -48,7 +48,7 @@
     "electron": "^29.1.0",
     "electron-builder": "^24.12.0",
     "electron-vite": "^2.1.0",
-    "husky": "^8.0.3",
+    "hublue": "^8.0.3",
     "postcss": "^8.4.38",
     "svelte": "^4.2.12",
     "svelte-check": "^3.6.8",

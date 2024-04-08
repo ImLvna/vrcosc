@@ -1,6 +1,7 @@
 <script lang="ts">
   import { writable } from "svelte/store";
   import { Events } from "../../../shared/moduleRunner";
+  import Colored from "../components/Colored.svelte";
   import Switch from "../components/Switch.svelte";
   import { default as ipcModuleRunner } from "../lib/moduleRunner";
 
@@ -16,8 +17,10 @@
 </script>
 
 <div class="size-full flex flex-col justify-start p-5">
-  <div
-    class="chatbox w-full h-36 flex flex-col justify-center pl-5 pr-5 bg-violet-500 rounded-xl text-white"
+  <Colored
+    bg={500}
+    text={"white"}
+    class="chatbox w-full h-36 flex flex-col justify-center pl-5 pr-5  rounded-xl "
   >
     <div
       class="bubble min-h-16 max-h-32 overflow-hidden flex flex-col justify-center items-center rounded-xl"
@@ -26,11 +29,11 @@
         <div class="text-center">{line}</div>
       {/each}
     </div>
-  </div>
-  <div>
-    <label for="sendToClient" class="text-white">Enable Luna OSC</label>
+  </Colored>
+  <Colored text={"white"}>
+    <label for="sendToClient">Enable Luna OSC</label>
     <Switch bind:value={$sendToClient} />
-  </div>
+  </Colored>
 </div>
 
 <style>

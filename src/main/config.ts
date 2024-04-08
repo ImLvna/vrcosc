@@ -1,6 +1,6 @@
+import { ipcMain } from "electron";
 import { existsSync, readFileSync, writeFileSync } from "fs";
 import { join } from "path";
-import { ipcMain } from "electron";
 import { cwd } from "process";
 import { IPCMessage } from "../shared/ipc";
 import { Config } from "./../shared/config";
@@ -51,6 +51,9 @@ const config = (() => {
       xsOverlay: {
         enabled: false,
         port: 42070,
+      },
+      ui: {
+        color: "Teal",
       },
     },
   };
