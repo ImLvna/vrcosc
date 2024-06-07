@@ -7,7 +7,6 @@
   "engines": {
     "node": ">=21.5.0"
   },
-  "packageManager": "pnpm@8.15.3",
   "scripts": {
     "build": "electron-vite build",
     "build:unpack": "npm run build && electron-builder --dir",

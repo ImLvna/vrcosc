@@ -2,25 +2,14 @@ import SpotifyWebApi from "spotify-web-api-node";
 import { ClientConfig, Events } from "../../shared/moduleRunner";
 import config, { save } from "../config";
 import moduleRunner from "../moduleRunner";
+import { Lyrics, LyricsSyllableSynced } from "../types/spotify";
 
 let ready = false;
 
 let songstr = "";
 let time = 0;
 
-interface LyricsResponse {
-  lyrics: {
-    syncType: "LINE_SYNCED";
-    lines: {
-      startTimeMs: string;
-      words: string;
-      syllables: string[];
-      endTimeMs: string;
-    }[];
-  };
-}
-
-let lyrics: LyricsResponse;
+let lyrics: Lyrics | null = null;
 
 moduleRunner.on(Events.initalizeParams, () => {
   moduleRunner.config[ClientConfig.spotifyEnabled] = !!(
@@ -56,37 +45,52 @@ if (!config.modules.spotify.clientId) {
       console.error(e);
     }
 
-    setInterval(
-      async () => {
-        const data = await api.refreshAccessToken();
-        api.setAccessToken(data.body.access_token);
-        if (data.body.refresh_token) {
-          api.setRefreshToken(data.body.refresh_token);
-          config.modules.spotify.refreshToken = data.body.refresh_token;
-          save();
-        }
-      },
-      1000 * 60 * 60,
-    );
+    setInterval(async () => {
+      const data = await api.refreshAccessToken();
+      api.setAccessToken(data.body.access_token);
+      if (data.body.refresh_token) {
+        api.setRefreshToken(data.body.refresh_token);
+        config.modules.spotify.refreshToken = data.body.refresh_token;
+        save();
+      }
+    }, 1000 * 60 * 60);
 
     moduleRunner.on(Events.buildChatbox, () => {
       if (!ready) return;
 
       if (!moduleRunner.config[ClientConfig.spotifyEnabled]) return;
       if (songstr === "") return;
-      if (!config.modules.spotify.lyrics || !lyrics || !lyrics.lyrics)
+      if (!config.modules.spotify.lyrics || !lyrics || !lyrics.lines)
         return songstr;
 
-      const possibleLines = lyrics.lyrics.lines.filter((line) => {
-        if (parseInt(line.startTimeMs) > time) return false;
-        if (parseInt(line.endTimeMs) === 0) return true;
-        return parseInt(line.endTimeMs) >= time;
+      const possibleLines = lyrics.lines.filter((line) => {
+        if ("start" in line) {
+          if (line.start > time) return false;
+          return line.end >= time;
+        } else if ("lead" in line) {
+          if (
+            (line as unknown as LyricsSyllableSynced["lines"][number]).start >
+            time
+          )
+            return false;
+          return (
+            (line as unknown as LyricsSyllableSynced["lines"][number]).end >=
+            time
+          );
+        }
       });
 
       const line = possibleLines[possibleLines.length - 1];
 
-      if (!line || line.words === "" || line.words === "♪") return songstr;
-      return line.words;
+      if (!line) return songstr;
+      if ("text" in line) return line.text;
+      if ("lead" in line) {
+        return line.lead!.reduce((acc, val) => {
+          acc += val.words;
+          if (!val.part) acc += " ";
+          return acc;
+        }, "" as string);
+      }
     });
 
     setInterval(() => {
@@ -120,7 +124,7 @@ if (!config.modules.spotify.clientId) {
           }
           try {
             lyrics = await fetch(
-              `https://spot-api.lvna.workers.dev/lyrics/${track.body.item?.id}`,
+              `https://spotify-lyrics-api.lvna.workers.dev/lyrics/${track.body.item?.id}`
             ).then((res) => res.json());
           } catch (e) {
             console.error("Failed to fetch lyrics");
