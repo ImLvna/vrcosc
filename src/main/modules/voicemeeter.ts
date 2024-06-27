@@ -1,5 +1,6 @@
 import voicemeeter from "voicemeeter-remote";
 import { ClientConfig, Events } from "../../shared/moduleRunner";
+import config from "../config";
 import moduleRunner from "../moduleRunner";
 
 (async () => {
@@ -13,7 +14,7 @@ import moduleRunner from "../moduleRunner";
     voicemeeter.login();
     voicemeeter.updateDeviceList();
   } catch (e) {
-    console.error(e);
+    if (config.debug) console.error(e);
     console.log("Voicemeeter initalization failed, skipping...");
     return;
   }
@@ -32,51 +33,51 @@ import moduleRunner from "../moduleRunner";
     // Output: Value from -60 to 12
     voicemeeter.setStripGain(
       strip,
-      moduleRunner.config[ClientConfig.vmGain] * 72 - 60,
+      moduleRunner.config[ClientConfig.vmGain] * 72 - 60
     );
   };
   const sendStripToClient = (strip: number) => {
     moduleRunner.updateParameter(
       ClientConfig.vmA1,
-      !!voicemeeter.getStripA1(strip),
+      !!voicemeeter.getStripA1(strip)
     );
     moduleRunner.updateParameter(
       ClientConfig.vmA2,
-      !!voicemeeter.getStripA2(strip),
+      !!voicemeeter.getStripA2(strip)
     );
     moduleRunner.updateParameter(
       ClientConfig.vmA3,
-      !!voicemeeter.getStripA3(strip),
+      !!voicemeeter.getStripA3(strip)
     );
     moduleRunner.updateParameter(
       ClientConfig.vmA4,
-      !!voicemeeter.getStripA4(strip),
+      !!voicemeeter.getStripA4(strip)
     );
     moduleRunner.updateParameter(
       ClientConfig.vmA5,
-      !!voicemeeter.getStripA5(strip),
+      !!voicemeeter.getStripA5(strip)
     );
     moduleRunner.updateParameter(
       ClientConfig.vmB1,
-      !!voicemeeter.getStripB1(strip),
+      !!voicemeeter.getStripB1(strip)
     );
     moduleRunner.updateParameter(
       ClientConfig.vmB2,
-      !!voicemeeter.getStripB2(strip),
+      !!voicemeeter.getStripB2(strip)
     );
     moduleRunner.updateParameter(
       ClientConfig.vmB3,
-      !!voicemeeter.getStripB3(strip),
+      !!voicemeeter.getStripB3(strip)
     );
     moduleRunner.updateParameter(
       ClientConfig.vmMute,
-      !!voicemeeter.getStripMute(strip),
+      !!voicemeeter.getStripMute(strip)
     );
     // Input: Value from -60 to 12
     // Output: Value from 0 to 1
     moduleRunner.updateParameter(
       ClientConfig.vmGain,
-      (voicemeeter.getStripGain(strip) + 60) / 72,
+      (voicemeeter.getStripGain(strip) + 60) / 72
     );
   };
 
@@ -95,7 +96,7 @@ import moduleRunner from "../moduleRunner";
       !!voicemeeter.getStripMute(strip);
   });
 
-  moduleRunner.on(Events.configUpdate, async (parameter, value) => {
+  moduleRunner.on(Events.configUpdate, async (parameter) => {
     const strip = moduleRunner.config[ClientConfig.vmStripNumber] - 1;
     if (strip < 0 || strip > 7) return;
     switch (parameter) {

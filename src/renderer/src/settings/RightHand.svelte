@@ -31,7 +31,7 @@
     </div>
   </Colored>
   <Colored text={"white"}>
-    <label for="sendToClient">Enable Luna OSC</label>
+    <label for="sendToClient">Enable Lillith OSC</label>
     <Switch bind:value={$sendToClient} />
   </Colored>
 </div>

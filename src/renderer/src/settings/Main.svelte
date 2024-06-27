@@ -1,4 +1,4 @@
 <script lang="ts">
 </script>
 
-Welcome To Luna OSC
+Welcome To Lillith OSC

@@ -15,7 +15,7 @@ const baseRequestBody: Omit<Omit<PiShockRequestBody, "Op">, "Duration"> = {
   Username: config.modules.pishock.username,
   Apikey: config.modules.pishock.apiKey,
   Code: config.modules.pishock.code,
-  Name: "Luna Osc",
+  Name: "Lillith's Osc",
 };
 
 export enum PiShockCommand {
@@ -39,7 +39,7 @@ export enum PiShockResponse {
 export async function sendCommand(
   cmd: PiShockCommand,
   duration: number,
-  intensity: number = undefined,
+  intensity: number | undefined = undefined
 ) {
   const body: PiShockRequestBody = {
     ...baseRequestBody,

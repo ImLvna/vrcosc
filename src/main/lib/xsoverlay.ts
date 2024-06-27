@@ -5,7 +5,7 @@ let ws = makeWebsocket();
 function makeWebsocket() {
   if (!config.modules.xsOverlay.enabled) return;
   const newWs = new WebSocket(
-    `ws://localhost:${config.modules.xsOverlay.port}/?client=Luna%20OSC`,
+    `ws://localhost:${config.modules.xsOverlay.port}/?client=Lillith%20OSC`
   );
   newWs.onopen = () => {
     console.log("xsOverlay connected");
@@ -18,7 +18,7 @@ function makeWebsocket() {
 }
 
 const baseData = {
-  sender: "Luna OSC",
+  sender: "Lillith OSC",
   target: "xsoverlay",
 };
 
@@ -31,6 +31,6 @@ export function sendNotification(title: string, message: string) {
       type: 1,
       title,
       content: message,
-    }),
+    })
   );
 }
