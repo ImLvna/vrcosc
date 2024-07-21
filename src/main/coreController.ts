@@ -7,14 +7,21 @@ let lastChatbox = "";
 
 let chatboxTimeout = false;
 
+let lastChatboxDate: Date;
+
 moduleRunner.on(Events.chatboxBuilt, (chatbox) => {
   if (config.verbose) console.log(chatbox);
+  if (!moduleRunner.config[ClientConfig.chatboxEnabled] || chatboxTimeout)
+    return;
+
+  // always resend after 15s if the chatbox is the same
   if (
-    !moduleRunner.config[ClientConfig.chatboxEnabled] ||
-    chatboxTimeout ||
-    chatbox === lastChatbox
+    chatbox === lastChatbox &&
+    new Date().getTime() - lastChatboxDate.getTime() < 15000
   )
     return;
+
+  lastChatboxDate = new Date();
   lastChatbox = chatbox;
   chatboxTimeout = true;
   setTimeout(() => {
