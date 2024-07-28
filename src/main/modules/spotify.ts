@@ -2,7 +2,7 @@ import SpotifyWebApi from "spotify-web-api-node";
 import { ClientConfig, Events } from "../../shared/moduleRunner";
 import config, { save } from "../config";
 import moduleRunner from "../moduleRunner";
-import { Lyrics, LyricsSyllableSynced } from "../types/spotify";
+import { Lyrics } from "../types/spotify";
 
 let ready = false;
 
@@ -64,32 +64,31 @@ if (!config.modules.spotify.clientId) {
         return songstr;
 
       const possibleLines = lyrics.lines.filter((line) => {
+        if ("lead" in line && line.lead) {
+          if (line.lead[0].start > time) return false;
+          return line.lead[line.lead.length - 1].end >= time;
+        }
         if ("start" in line) {
           if (line.start > time) return false;
           return line.end >= time;
-        } else if ("lead" in line) {
-          if (
-            (line as unknown as LyricsSyllableSynced["lines"][number]).start >
-            time
-          )
-            return false;
-          return (
-            (line as unknown as LyricsSyllableSynced["lines"][number]).end >=
-            time
-          );
         }
+        return false;
       });
 
       const line = possibleLines[possibleLines.length - 1];
 
       if (!line) return songstr;
-      if ("text" in line) return line.text;
+      if ("text" in line) return songstr + "\n" + line.text;
       if ("lead" in line) {
-        return line.lead!.reduce((acc, val) => {
-          acc += val.words;
-          if (!val.part) acc += " ";
-          return acc;
-        }, "" as string);
+        return (
+          songstr +
+          "\n" +
+          line.lead!.reduce((acc, val) => {
+            acc += val.words;
+            if (!val.part) acc += " ";
+            return acc;
+          }, "" as string)
+        );
       }
     });
 
@@ -112,11 +111,7 @@ if (!config.modules.spotify.clientId) {
           time = track.body.progress_ms || 0;
         } else songstr = "";
 
-        if (
-          songstr !== "" &&
-          oldSongstr !== songstr &&
-          config.modules.spotify.lyrics
-        ) {
+        if (songstr !== "" && oldSongstr !== songstr) {
           // Refresh Lyrics
           if (config.verbose) {
             console.log("Fetching lyrics");
