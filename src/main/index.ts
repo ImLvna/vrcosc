@@ -1,5 +1,5 @@
+import { BrowserWindow, app } from "electron";
 import { join } from "path";
-import { BrowserWindow, Menu, Tray, app } from "electron";
 
 export let mainWindow: BrowserWindow | null = null;
 
@@ -23,24 +23,6 @@ let configMod: typeof import("./config");
 
 app.whenReady().then(async () => {
   createWindow();
-  const tray = new Tray(
-    join(
-      !app.isPackaged && process.env.ELECTRON_RENDERER_URL
-        ? ""
-        : join(process.resourcesPath, "app.asar.unpacked"),
-      "resources/static/icon.png",
-    ),
-  );
-
-  const contextMenu = Menu.buildFromTemplate([
-    { label: "Close", click: () => app.quit() },
-  ]);
-  tray.on("click", () => {
-    if (mainWindow) {
-      mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
-    }
-  });
-  tray.setContextMenu(contextMenu);
 
   configMod = await import("./config");
 
