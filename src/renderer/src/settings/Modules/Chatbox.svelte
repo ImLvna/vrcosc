@@ -81,6 +81,14 @@
                   $config[indexToSetEnum(i)]
                 )}
             />
+            <div>Enabled By Default</div>
+            <Switch
+              value={$serverConfig.sets[i][0]}
+              on:change={() => {
+                $serverConfig.sets[i][0] = !$serverConfig.sets[i][0];
+                serverConfig.set($serverConfig);
+              }}
+            />
             <div>Messages</div>
             <div class="flex flex-col w-full">
               {#each set.filter((i) => typeof i === "string") as _, j}
