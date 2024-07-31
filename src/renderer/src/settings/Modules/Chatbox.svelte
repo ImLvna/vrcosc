@@ -18,24 +18,6 @@
   );
 
   $: window.electron.config.setConfigModule("chatbox", $serverConfig);
-
-  const indexToSetEnum = (i: number) =>
-    [
-      ClientConfig.messageSet1,
-      ClientConfig.messageSet2,
-      ClientConfig.messageSet3,
-      ClientConfig.messageSet4,
-      ClientConfig.messageSet5,
-      ClientConfig.messageSet6,
-      ClientConfig.messageSet7,
-    ][i] as
-      | ClientConfig.messageSet1
-      | ClientConfig.messageSet2
-      | ClientConfig.messageSet3
-      | ClientConfig.messageSet4
-      | ClientConfig.messageSet5
-      | ClientConfig.messageSet6
-      | ClientConfig.messageSet7;
 </script>
 
 <Collapse>
@@ -74,15 +56,6 @@
           {#each $serverConfig.sets as set, i}
             <div>Set {i + 1}</div>
             <Switch
-              bind:value={$config[indexToSetEnum(i)]}
-              on:change={() =>
-                moduleRunner.updateParameter(
-                  indexToSetEnum(i),
-                  $config[indexToSetEnum(i)]
-                )}
-            />
-            <div>Enabled By Default</div>
-            <Switch
               value={$serverConfig.sets[i][0]}
               on:change={() => {
                 $serverConfig.sets[i][0] = !$serverConfig.sets[i][0];
@@ -118,8 +91,25 @@
               >
                 Add
               </button>
+              <button
+                on:click={() => {
+                  $serverConfig.sets.splice(i, 1);
+                  serverConfig.set($serverConfig);
+                }}
+              >
+                Remove Set
+              </button>
             </div>
           {/each}
+
+          <button
+            on:click={() => {
+              $serverConfig.sets.push([true, ""]);
+              serverConfig.set($serverConfig);
+            }}
+          >
+            Add Set
+          </button>
         </div>
       </div>
     {/if}

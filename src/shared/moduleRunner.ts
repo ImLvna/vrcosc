@@ -50,13 +50,6 @@ export enum ClientConfig {
   chatboxEnabled = "chatbox",
 
   messageEnabled = "message/enabled",
-  messageSet1 = "message/set1",
-  messageSet2 = "message/set2",
-  messageSet3 = "message/set3",
-  messageSet4 = "message/set4",
-  messageSet5 = "message/set5",
-  messageSet6 = "message/set6",
-  messageSet7 = "message/set7",
 
   spotifyEnabled = "spotify",
 
@@ -96,13 +89,6 @@ export type ClientConfigData = {
   [ClientConfig.chatboxEnabled]: boolean;
 
   [ClientConfig.messageEnabled]: boolean;
-  [ClientConfig.messageSet1]: boolean;
-  [ClientConfig.messageSet2]: boolean;
-  [ClientConfig.messageSet3]: boolean;
-  [ClientConfig.messageSet4]: boolean;
-  [ClientConfig.messageSet5]: boolean;
-  [ClientConfig.messageSet6]: boolean;
-  [ClientConfig.messageSet7]: boolean;
 
   [ClientConfig.spotifyEnabled]: boolean;
 
@@ -144,15 +130,6 @@ export abstract class ModuleRunnerBase {
     [ClientConfig.chatboxEnabled]: true,
 
     [ClientConfig.messageEnabled]: true,
-
-    [ClientConfig.messageSet1]: true,
-    [ClientConfig.messageSet2]: true,
-    [ClientConfig.messageSet3]: true,
-    [ClientConfig.messageSet4]: true,
-    [ClientConfig.messageSet5]: true,
-    [ClientConfig.messageSet6]: true,
-    [ClientConfig.messageSet7]: true,
-
     [ClientConfig.spotifyEnabled]: true,
 
     [ClientConfig.timeEnabled]: true,
@@ -190,12 +167,12 @@ export abstract class ModuleRunnerBase {
 
   abstract updateParameter<T extends ClientConfig>(
     parameter: T,
-    value: ClientConfigData[T],
+    value: ClientConfigData[T]
   ): void;
 
   abstract on<T extends Events>(
     event: T,
-    listener: (...args: EventsData[T]["args"]) => EventsData[T]["return"],
+    listener: (...args: EventsData[T]["args"]) => EventsData[T]["return"]
   ): void;
 
   abstract emit<T extends Events>(

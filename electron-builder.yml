@@ -15,6 +15,7 @@ win:
   executableName: vrcosc
   target:
     - portable
+    - nsis
   artifactName: ${name}.${ext}
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
