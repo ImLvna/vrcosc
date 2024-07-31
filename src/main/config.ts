@@ -1,11 +1,35 @@
-import { ipcMain } from "electron";
-import { existsSync, readFileSync, writeFileSync } from "fs";
+import { app, ipcMain } from "electron";
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  renameSync,
+  writeFileSync,
+} from "fs";
 import { join } from "path";
 import { cwd } from "process";
 import { IPCMessage } from "../shared/ipc";
 import { Config } from "./../shared/config";
 
+function isDev() {
+  return process.argv[0].includes("electron");
+}
+
 function findConfigPath() {
+  if (!isDev()) {
+    if (!existsSync(app.getPath("userData"))) {
+      mkdirSync(app.getPath("userData"));
+    }
+
+    if (existsSync(join(cwd(), "config.json"))) {
+      console.log("Moving config file to userData");
+      renameSync(
+        join(cwd(), "config.json"),
+        join(app.getPath("userData"), "config.json")
+      );
+    }
+    return join(app.getPath("userData"), "config.json");
+  }
   if (existsSync(join(cwd(), "config.json"))) {
     return join(cwd(), "config.json");
   }
