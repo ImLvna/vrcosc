@@ -10,10 +10,13 @@ export interface Config {
       interval: number;
     };
     spotify: {
-      clientId: string;
-      clientSecret: string;
-      redirectUri: string;
-      refreshToken: string;
+      api: {
+        clientId: string;
+        clientSecret: string;
+        redirectUri: string;
+        refreshToken: string;
+      };
+      alternativeApi: string;
       lyrics: boolean;
       interval: number;
     };

@@ -13,47 +13,54 @@ let lyrics: Lyrics | null = null;
 
 moduleRunner.on(Events.initalizeParams, () => {
   moduleRunner.config[ClientConfig.spotifyEnabled] = !!(
-    config.modules.spotify.clientId &&
-    config.modules.spotify.clientSecret &&
-    config.modules.spotify.redirectUri
+    (config.modules.spotify.api.clientId &&
+      config.modules.spotify.api.clientSecret &&
+      config.modules.spotify.api.redirectUri) ||
+    config.modules.spotify.alternativeApi
   );
 });
 
-if (!config.modules.spotify.clientId) {
+if (
+  !config.modules.spotify.api.clientId &&
+  !config.modules.spotify.alternativeApi
+) {
   console.error("Spotify module requires a clientId");
 } else
   (async () => {
-    const api = new SpotifyWebApi({
-      clientId: config.modules.spotify.clientId,
-      clientSecret: config.modules.spotify.clientSecret,
-      redirectUri: config.modules.spotify.redirectUri,
-      refreshToken: config.modules.spotify.refreshToken,
-    });
+    let api: SpotifyWebApi;
+    if (config.modules.spotify.api.clientId) {
+      api = new SpotifyWebApi({
+        clientId: config.modules.spotify.api.clientId,
+        clientSecret: config.modules.spotify.api.clientSecret,
+        redirectUri: config.modules.spotify.api.redirectUri,
+        refreshToken: config.modules.spotify.api.refreshToken,
+      });
 
-    try {
-      api.refreshAccessToken().then((data) => {
+      try {
+        api.refreshAccessToken().then((data) => {
+          api.setAccessToken(data.body.access_token);
+          if (data.body.refresh_token) {
+            api.setRefreshToken(data.body.refresh_token);
+            config.modules.spotify.api.refreshToken = data.body.refresh_token;
+            save();
+          }
+          ready = true;
+        });
+      } catch (e) {
+        console.error("Failed to refresh access token");
+        console.error(e);
+      }
+
+      setInterval(async () => {
+        const data = await api.refreshAccessToken();
         api.setAccessToken(data.body.access_token);
         if (data.body.refresh_token) {
           api.setRefreshToken(data.body.refresh_token);
-          config.modules.spotify.refreshToken = data.body.refresh_token;
+          config.modules.spotify.api.refreshToken = data.body.refresh_token;
           save();
         }
-        ready = true;
-      });
-    } catch (e) {
-      console.error("Failed to refresh access token");
-      console.error(e);
-    }
-
-    setInterval(async () => {
-      const data = await api.refreshAccessToken();
-      api.setAccessToken(data.body.access_token);
-      if (data.body.refresh_token) {
-        api.setRefreshToken(data.body.refresh_token);
-        config.modules.spotify.refreshToken = data.body.refresh_token;
-        save();
-      }
-    }, 1000 * 60 * 60);
+      }, 1000 * 60 * 60);
+    } else ready = true;
 
     moduleRunner.on(Events.buildChatbox, () => {
       if (!ready) return;
@@ -78,18 +85,16 @@ if (!config.modules.spotify.clientId) {
       const line = possibleLines[possibleLines.length - 1];
 
       if (!line) return songstr;
-      if ("text" in line) return songstr + "\n" + line.text;
-      if ("lead" in line) {
-        return (
-          songstr +
-          "\n" +
-          line.lead!.reduce((acc, val) => {
-            acc += val.words;
-            if (!val.part) acc += " ";
-            return acc;
-          }, "" as string)
-        );
+      if ("text" in line) return `${songstr}\n${line.text}`;
+      if ("lead" in line && line.lead) {
+        return `${songstr}\n${line.lead.reduce((acc, val) => {
+          let nacc = acc;
+          nacc += val.words;
+          if (!val.part) nacc += " ";
+          return nacc;
+        }, "" as string)}`;
       }
+      return;
     });
 
     setInterval(() => {
@@ -100,26 +105,31 @@ if (!config.modules.spotify.clientId) {
       if (!moduleRunner.config[ClientConfig.spotifyEnabled] || !ready) return;
 
       try {
-        const track = await api.getMyCurrentPlaybackState();
+        let track: SpotifyApi.CurrentPlaybackResponse;
+        if (config.modules.spotify.alternativeApi) {
+          track = await fetch(config.modules.spotify.alternativeApi).then(
+            (res) => res.json()
+          );
+        } else track = (await api.getMyCurrentPlaybackState()).body;
 
         const oldSongstr = songstr;
 
-        if (track.body.is_playing && track.body.item) {
-          songstr = `📻 ${track.body.item?.name} - ${
-            (track.body.item as any).artists[0].name
+        if (track.is_playing && track.item) {
+          songstr = `📻 ${track.item?.name} - ${
+            (track.item as any).artists[0].name
           }`;
-          time = track.body.progress_ms || 0;
+          time = track.progress_ms || 0;
         } else songstr = "";
 
         if (songstr !== "" && oldSongstr !== songstr) {
           // Refresh Lyrics
           if (config.verbose) {
             console.log("Fetching lyrics");
-            console.log(track.body.item?.id);
+            console.log(track.item?.id);
           }
           try {
             lyrics = await fetch(
-              `https://spotify-lyrics-api.lvna.workers.dev/lyrics/${track.body.item?.id}`
+              `https://spotify-lyrics-api.lvna.workers.dev/lyrics/${track.item?.id}`
             ).then((res) => res.json());
           } catch (e) {
             console.error("Failed to fetch lyrics");

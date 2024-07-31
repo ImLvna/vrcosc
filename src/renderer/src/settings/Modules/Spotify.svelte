@@ -46,6 +46,19 @@
         </div>
       </div>
 
+      <!-- alterbativeApi -->
+      <div class="w-full flex flex-row justify-between">
+        <label for="clientId">Alternative API Url</label>
+        <Colored bg={800} class="rounded-xl">
+          <input
+            class="bg-blue-800"
+            type="text"
+            id="clientId"
+            bind:value={$serverConfig["alternativeApi"]}
+          />
+        </Colored>
+      </div>
+
       <!-- clientId -->
       <div class="w-full flex flex-row justify-between">
         <label for="clientId">Client ID</label>

@@ -36,10 +36,13 @@ const config = (() => {
         interval: 3000,
       },
       spotify: {
-        clientId: "",
-        clientSecret: "",
-        redirectUri: "",
-        refreshToken: "",
+        api: {
+          clientId: "",
+          clientSecret: "",
+          redirectUri: "",
+          refreshToken: "",
+        },
+        alternativeApi: "",
         lyrics: true,
         interval: 3000,
       },

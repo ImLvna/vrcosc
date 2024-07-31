@@ -3,3 +3,4 @@ dist/
 out/
 packed/
 config.json
+start.sh
