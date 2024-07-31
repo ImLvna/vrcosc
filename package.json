@@ -19,8 +19,7 @@
     "test": "tsc --noEmit",
     "lint": "biome lint .",
     "format": "biome format . --write",
-    "fix": "biome check . --apply",
-    "postinstall": "electron-builder install-app-deps"
+    "fix": "biome check . --apply"
   },
   "keywords": [],
   "author": "",
